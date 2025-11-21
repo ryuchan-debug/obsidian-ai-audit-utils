@@ -1,0 +1,21 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ObsidianComprehendAccessPhase2Extended",
+      "Effect": "Allow",
+      "Action": [
+        "comprehend:DetectPiiEntities",
+        "comprehend:DetectSentiment",
+        "comprehend:DetectEntities",
+        "comprehend:DetectKeyPhrases"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "ap-northeast-1"
+        }
+      }
+    }
+  ]
+}
