@@ -1,14 +1,27 @@
-# Audit Utils - Phase 2 Monitoring Infrastructure (Extended)
+# Audit Utils - Phase 3a Unified Audit System
 
-**Version**: 2.0.0 (Phase 2 Extended)  
-**Status**: Production Ready (with limitations)  
-**GitHub**: https://github.com/ryuchan-debug/obsidian-ai-scripts/tree/main/audit_utils
+**Version**: 3.0.0 (Phase 3a - Unified & Secure)  
+**Status**: ✅ Production Ready (Security P0/P1 Fixed)  
+**GitHub**: https://github.com/ryuchan-debug/obsidian-ai-audit-utils  
+**Code Review**: 8.5-9.0/10 (Gemini 2.0 Flash, 2025-11-21)
 
 ---
 
 ## 📋 Overview
 
-Phase 2 Extended monitoring infrastructure for AI script auditing:
+Phase 3a unified and secure monitoring infrastructure for AI script auditing:
+
+### Core Features
+- **🔐 Security Enhanced** (Phase 3a P0 Fixes):
+  - Temporary file ACL protection (user-only access)
+  - Path traversal prevention (PSScriptRoot-based)
+  - Exponential backoff with throttling detection
+- **🔄 Idempotent Operations** (Phase 3a P0 Fix):
+  - Processed directory tracking (no duplicate uploads)
+  - Safe re-execution support
+- **📦 Unified Module** (Phase 3a):
+  - `audit_utils.py`: Single source of truth for audit operations
+  - Eliminates code duplication across scripts
 - **trace_id generation**: UUID v4 + ISO8601 timestamp
 - **PII masking**: Amazon Comprehend + Regex-based fallback
 - **Sentiment analysis**: POSITIVE/NEGATIVE/NEUTRAL/MIXED detection
@@ -16,7 +29,7 @@ Phase 2 Extended monitoring infrastructure for AI script auditing:
 - **Entity recognition**: Person, Location, Organization, Date extraction
 - **Audit logging**: Hash chain + RSA-SHA256 signature
 - **Image auditing**: AES-256-GCM encryption, 7-day TTL
-- **CloudWatch integration**: Centralized log monitoring
+- **CloudWatch integration**: Centralized log monitoring with 7-day retention
 
 ---
 
@@ -52,6 +65,63 @@ $env:PATH += ";C:\Users\kasab\scripts\audit_utils"
 # Add to PowerShell profile for persistence:
 # echo '$env:PATH += ";C:\Users\kasab\scripts\audit_utils"' >> $PROFILE
 ```
+
+---
+
+## 🆕 Phase 3a New Features (2025-11-21)
+
+### 1. Upload-ExistingLogs.ps1 v2.0.0
+
+**Idempotent CloudWatch Uploads:**
+```powershell
+# Upload logs to CloudWatch (idempotent)
+.\Upload-ExistingLogs.ps1
+
+# Dry-run mode (preview deletions)
+.\Upload-ExistingLogs.ps1 -DryRun
+```
+
+**Features:**
+- ✅ **Idempotency**: Processed logs moved to `processed/` directory (no duplicates)
+- ✅ **Auto-cleanup**: 7-day retention policy (CloudWatch 7d + Local 7d = 14d total)
+- ✅ **Exponential backoff**: Automatic retry on API throttling
+- ✅ **Portable**: PSScriptRoot-based paths (no hardcoded paths)
+- ✅ **Dry-run mode**: Preview changes before deletion
+
+### 2. Send-AuditLog.ps1 v3.0.0
+
+**Security Enhancements:**
+- ✅ **ACL protection**: Temporary files accessible only by current user
+- ✅ **No permission inheritance**: Explicit file permissions (600 equivalent)
+
+### 3. audit_utils.py v1.0.0
+
+**Unified Audit Module:**
+```python
+from audit_utils import AuditLogger
+
+# Initialize
+audit_logger = AuditLogger()
+
+# Generate trace_id
+trace_id = audit_logger.generate_trace_id()
+
+# All-in-one audit logging
+log_file, log_entry = audit_logger.create_audit_log_entry(
+    trace_id=trace_id,
+    method="chatgpt",
+    model="gpt-5",
+    prompt="Your prompt here",
+    response="AI response here",
+    language_code="ja"
+)
+```
+
+**Benefits:**
+- ✅ Single source of truth for audit operations
+- ✅ Eliminates code duplication (30-50% code reduction)
+- ✅ Consistent trace_id propagation
+- ✅ Integrated PII masking + Comprehend analysis
 
 ---
 
